@@ -301,11 +301,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &1903664637 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5429055902815617691, guid: b753d091d1ec9d44baabd9a728c69bc7, type: 3}
-  m_PrefabInstance: {fileID: 5429055902466318429}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1957697705
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,7 +430,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camara: {fileID: 183626139}
   velocidad: 2
-  prefabSuelo: {fileID: 1903664637}
+  prefabSuelo: {fileID: 5429055902815617691, guid: b753d091d1ec9d44baabd9a728c69bc7, type: 3}
 --- !u!1001 &5429055902466318429
 PrefabInstance:
   m_ObjectHideFlags: 0

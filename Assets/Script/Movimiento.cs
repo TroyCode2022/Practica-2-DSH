@@ -58,7 +58,7 @@ public class Movimiento : MonoBehaviour
     //Exixt porque hará eso una vez que salga del objeto, que deje de colisionar
     void OnCollisionExit (Collision other)
     {
-        if (other.transform.tag == "suelo")
+        if (other.gameObject.CompareTag("suelo"))
         {
             StartCoroutine(CrearSuelo(other));
         }
@@ -67,11 +67,12 @@ public class Movimiento : MonoBehaviour
     //El collider será el suelo en este caso
     IEnumerator CrearSuelo(Collision other)
     {
+        Debug.Log("crea suelo");
         //Hacemos que caiga
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.2f);
         other.rigidbody.isKinematic = false;
         other.rigidbody.useGravity = true;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.5f);
         Destroy(other.gameObject);//Destruimos el objeto para que no caiga infinitamente.
 
         //Lo movemos a la derecha o adelante aleatoriamente
