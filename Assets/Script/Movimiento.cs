@@ -7,12 +7,14 @@ public class Movimiento : MonoBehaviour
     public Camera camara;
     public int velocidad;
     public GameObject prefabSuelo;
+    public GameObject prefabBarrera;
 
     private Vector3 offset;
     private float ValX;
     private float ValZ;
     private Rigidbody rb;
     private Vector3 direccionActual;
+    private int cont = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,14 +32,18 @@ public class Movimiento : MonoBehaviour
     {
         camara.transform.position = this.transform.position + offset;
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+
             //Si la direccion actual es igual a eso significa que estoy avanzando
-            if (direccionActual == Vector3.forward)
-                direccionActual = Vector3.right;
-            else
-                direccionActual = Vector3.forward;
-        }
+            direccionActual = Vector3.left;
+           
+        }else if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            direccionActual = Vector3.right;
+        }else if(Input.GetKeyDown(KeyCode.Space))
+            direccionActual = Vector3.forward;
+
         //delta time se corresponde con los frames
         float tiempo = velocidad * Time.deltaTime;
         rb.transform.Translate(direccionActual * tiempo);
@@ -68,11 +74,16 @@ public class Movimiento : MonoBehaviour
     IEnumerator CrearSuelo(Collision other)
     {
         Debug.Log("crea suelo");
+        float desp;
+        cont++;
+
         //Hacemos que caiga
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.15f);
+        //iskinematic hace que solo se mueva cuando tu le dices, no responde a otros objetos del entorno
         other.rigidbody.isKinematic = false;
         other.rigidbody.useGravity = true;
-        yield return new WaitForSeconds(1.5f);
+
+        yield return new WaitForSeconds(0.5f);
         Destroy(other.gameObject);//Destruimos el objeto para que no caiga infinitamente.
 
         //Lo movemos a la derecha o adelante aleatoriamente
@@ -84,7 +95,23 @@ public class Movimiento : MonoBehaviour
 
         //Volvemos a crear el objeto segun los nuevos valores de posicion
         GameObject elsuelo = Instantiate(prefabSuelo, new Vector3(ValX, 0.0f, ValZ), Quaternion.identity) as GameObject;
+        if (Random.Range(0f, 1f) > 0.5)
+        {
+            float ranBarrera = Random.Range(0f, 1f);
+            if (ranBarrera < 0.5f)
+                desp = 1.74f;
+            else
+                desp = -1.74f;
+            GameObject labarrera = Instantiate(prefabBarrera, new Vector3(ValX+desp, 0.86f, ValZ), Quaternion.identity) as GameObject;
 
+        }
+
+        if (cont == 10)
+        {
+            velocidad += 1;
+            cont = 0;
+        }
+        
     }
 }
     
