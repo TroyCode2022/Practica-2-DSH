@@ -20,7 +20,7 @@ public class Movimiento : MonoBehaviour
     private float maximosSuelo = 6;
 
     private List<GameObject> barreras = new List<GameObject>();
-    private List<GameObject> suelos = new List<GameObject>();
+    private Queue<GameObject> suelos = new Queue<GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -62,6 +62,8 @@ public class Movimiento : MonoBehaviour
 
     void SueloInicial()
     {
+        GameObject primersuelo = Instantiate(prefabSuelo, new Vector3(0, 0.0f, 0), Quaternion.identity) as GameObject;
+        suelos.Enqueue(primersuelo);
         //Durante 3 veces añadimos un suelo mas 
         for (int n = 0; n < 3; n++)
         {
@@ -69,16 +71,17 @@ public class Movimiento : MonoBehaviour
             //Instantiate es crear algo
             //Cuaternion es como estaba girado el objeto originalmente
             GameObject elsuelo = Instantiate(prefabSuelo, new Vector3(ValX, 0.0f, ValZ), Quaternion.identity) as GameObject;
-            suelos.Add(elsuelo);
+            suelos.Enqueue(elsuelo);
         }
     }
 
     //Exixt porque hará eso una vez que salga del objeto, que deje de colisionar
-    void OnCollisionExit (Collision other)
+    IEnumerator OnCollisionExit (Collision other)
     {
         if (other.gameObject.CompareTag("suelo"))
         {
-            StartCoroutine(CrearSuelo(other));
+            Coroutine currentCoroutine = StartCoroutine(CrearSuelo(other));
+            yield return currentCoroutine;
         }
     }
 
@@ -87,8 +90,8 @@ public class Movimiento : MonoBehaviour
     {
         float desp;
         cont++;
-        yield return new WaitForSeconds(0.1f);
-        Debug.Log(suelos.Count);
+        
+        
 
         if (suelos.Count >= maximosSuelo)
         {
@@ -98,11 +101,13 @@ public class Movimiento : MonoBehaviour
             //suelos[0].GetComponent<Rigidbody>().useGravity = true;
 
             //yield return new WaitForSeconds(0.5f);
-            Destroy(suelos[0]);//Destruimos el objeto para que no caiga infinitamente.
-            suelos.RemoveAt(0);
+            
+            Debug.Log("Destruye" + cont);
+            Destroy(suelos.Dequeue(), 0.2f);//Destruimos el objeto para que no caiga infinitamente.
+            //suelos.RemoveAt(0);
         }
 
-
+        yield return new WaitForSeconds(0.5f);
         //Lo movemos a la derecha o adelante aleatoriamente
         float ran = Random.Range(0f, 1f);
         if (ran < 0.5f)
@@ -114,7 +119,7 @@ public class Movimiento : MonoBehaviour
         GameObject elsuelo = Instantiate(prefabSuelo, new Vector3(ValX, 0.0f, ValZ), Quaternion.identity) as GameObject;
         
         //Añadimos el suelo a la lista para poder eliminarlo para descargar la memoria
-        suelos.Add(elsuelo);
+        suelos.Enqueue(elsuelo);
         
         //Creamos una barrera aleatoriamente en la nueva plataforma para ponerlo más dificil
         if (Random.Range(0f, 1f) > 0.5)
@@ -138,8 +143,9 @@ public class Movimiento : MonoBehaviour
 
         if (cont == 7)
         {
+            Debug.Log(maximosSuelo);
             velocidad += 1;
-            maximosSuelo += 0.5f;
+            //maximosSuelo += 0.5f;
             cont = 0;
         }
         
