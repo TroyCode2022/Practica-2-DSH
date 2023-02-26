@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class Movimiento : MonoBehaviour
 {
@@ -15,6 +17,11 @@ public class Movimiento : MonoBehaviour
     private Rigidbody rb;
     private Vector3 direccionActual;
     private int cont = 0;
+    private float maximosSuelo = 6;
+
+    private List<GameObject> barreras = new List<GameObject>();
+    private List<GameObject> suelos = new List<GameObject>();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +54,10 @@ public class Movimiento : MonoBehaviour
         //delta time se corresponde con los frames
         float tiempo = velocidad * Time.deltaTime;
         rb.transform.Translate(direccionActual * tiempo);
+
+        if(this.transform.position.y < -20)
+            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+
     }
 
     void SueloInicial()
@@ -58,6 +69,7 @@ public class Movimiento : MonoBehaviour
             //Instantiate es crear algo
             //Cuaternion es como estaba girado el objeto originalmente
             GameObject elsuelo = Instantiate(prefabSuelo, new Vector3(ValX, 0.0f, ValZ), Quaternion.identity) as GameObject;
+            suelos.Add(elsuelo);
         }
     }
 
@@ -73,18 +85,23 @@ public class Movimiento : MonoBehaviour
     //El collider será el suelo en este caso
     IEnumerator CrearSuelo(Collision other)
     {
-        Debug.Log("crea suelo");
         float desp;
         cont++;
+        yield return new WaitForSeconds(0.1f);
+        Debug.Log(suelos.Count);
 
-        //Hacemos que caiga
-        yield return new WaitForSeconds(0.15f);
-        //iskinematic hace que solo se mueva cuando tu le dices, no responde a otros objetos del entorno
-        other.rigidbody.isKinematic = false;
-        other.rigidbody.useGravity = true;
+        if (suelos.Count >= maximosSuelo)
+        {
+            //Hacemos que caiga la plataforma
+            //iskinematic hace que solo se mueva cuando tu le dices, no responde a otros objetos del entorno
+            //suelos[0].GetComponent<Rigidbody>().isKinematic = false;
+            //suelos[0].GetComponent<Rigidbody>().useGravity = true;
 
-        yield return new WaitForSeconds(0.5f);
-        Destroy(other.gameObject);//Destruimos el objeto para que no caiga infinitamente.
+            //yield return new WaitForSeconds(0.5f);
+            Destroy(suelos[0]);//Destruimos el objeto para que no caiga infinitamente.
+            suelos.RemoveAt(0);
+        }
+
 
         //Lo movemos a la derecha o adelante aleatoriamente
         float ran = Random.Range(0f, 1f);
@@ -95,20 +112,34 @@ public class Movimiento : MonoBehaviour
 
         //Volvemos a crear el objeto segun los nuevos valores de posicion
         GameObject elsuelo = Instantiate(prefabSuelo, new Vector3(ValX, 0.0f, ValZ), Quaternion.identity) as GameObject;
+        
+        //Añadimos el suelo a la lista para poder eliminarlo para descargar la memoria
+        suelos.Add(elsuelo);
+        
+        //Creamos una barrera aleatoriamente en la nueva plataforma para ponerlo más dificil
         if (Random.Range(0f, 1f) > 0.5)
         {
+            
             float ranBarrera = Random.Range(0f, 1f);
             if (ranBarrera < 0.5f)
                 desp = 1.74f;
             else
                 desp = -1.74f;
-            GameObject labarrera = Instantiate(prefabBarrera, new Vector3(ValX+desp, 0.86f, ValZ), Quaternion.identity) as GameObject;
 
+            //Generamos una barrera y destruimos la más antigua, permitimos 5 a la vez
+            GameObject labarrera = Instantiate(prefabBarrera, new Vector3(ValX+desp, 0.86f, ValZ), Quaternion.identity) as GameObject;
+            barreras.Add(labarrera);
+            if (barreras.Count >= 6)
+            {
+                Destroy(barreras[0]);
+                barreras.RemoveAt(0);
+            }
         }
 
-        if (cont == 10)
+        if (cont == 7)
         {
             velocidad += 1;
+            maximosSuelo += 0.5f;
             cont = 0;
         }
         
