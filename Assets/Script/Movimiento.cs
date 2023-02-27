@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
 
 
 public class Movimiento : MonoBehaviour
@@ -10,6 +12,7 @@ public class Movimiento : MonoBehaviour
     public int velocidad;
     public GameObject prefabSuelo;
     public GameObject prefabBarrera;
+    public Text texto;
 
     private Vector3 offset;
     private float ValX;
@@ -18,6 +21,7 @@ public class Movimiento : MonoBehaviour
     private Vector3 direccionActual;
     private int cont = 0;
     private float maximosSuelo = 6;
+    private float puntos = 0;
 
     private List<GameObject> barreras = new List<GameObject>();
     private Queue<GameObject> suelos = new Queue<GameObject>();
@@ -145,10 +149,19 @@ public class Movimiento : MonoBehaviour
         {
             Debug.Log(maximosSuelo);
             velocidad += 1;
-            //maximosSuelo += 0.5f;
+            maximosSuelo += 0.5f;
             cont = 0;
         }
+
         
+        ActualizarPuntos();
+    }
+
+    void ActualizarPuntos()
+    {
+        Debug.Log(puntos);
+        puntos += velocidad * 12;
+        texto.text = "Puntuación: " + puntos;
     }
 }
     
