@@ -76,16 +76,4 @@ public class pulsar : MonoBehaviour
         yield return new WaitForSeconds(1);
         contar = true;
     }
-
-    void Pulsado-wait()
-    {
-        Debug.Log("Pulsacion");
-        //Una vez pulsamos el boton activamos la imagen para que se vea
-        //activamos la imagen que hay en el sprite, es decir, la del vector
-        img.gameObject.SetActive(true);
-
-        //Desactivamos el bot�n para que no se vea
-        btn.gameObject.SetActive(tru);
-        contar = true;
-    }
 }
