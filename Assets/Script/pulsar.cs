@@ -16,6 +16,7 @@ public class pulsar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Prueba de errores")
         //btn = gameObject.findAny
         //La siguiente linea es para no tener que arrastrar el objeto en la interfaz
         btn = GameObject.FindWithTag("btnstart").GetComponent<Button>();
@@ -23,6 +24,8 @@ public class pulsar : MonoBehaviour
         btn.onClick.AddListener(Pulsado);
         contar = false;
         numero = 3;
+
+
     }
 
     // Update is called once per frame
@@ -66,7 +69,7 @@ public class pulsar : MonoBehaviour
         //activamos la imagen que hay en el sprite, es decir, la del vector
         img.gameObject.SetActive(true);
 
-        //Desactivamos el botón para que no se vea
+        //Desactivamos el botï¿½n para que no se vea
         btn.gameObject.SetActive(false);
         contar = true;
     }
@@ -76,4 +79,6 @@ public class pulsar : MonoBehaviour
         yield return new WaitForSeconds(1);
         contar = true;
     }
+
+
 }
