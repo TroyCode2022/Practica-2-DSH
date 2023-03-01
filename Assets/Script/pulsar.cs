@@ -61,12 +61,12 @@ public class pulsar : MonoBehaviour
 
     void Pulsado()
     {
-        Debug.Log("Pulsacion");
+        Debug.Log("He pulsado");
         //Una vez pulsamos el boton activamos la imagen para que se vea
         //activamos la imagen que hay en el sprite, es decir, la del vector
         img.gameObject.SetActive(true);
 
-        //Desactivamos el botï¿½n para que no se vea
+        //Desactivamos el botón para que no se vea
         btn.gameObject.SetActive(false);
         contar = true;
     }
